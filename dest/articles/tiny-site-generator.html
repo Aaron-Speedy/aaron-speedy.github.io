@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aaron's Webpage</title>
+  <link rel="stylesheet" href="../style.css">
+</head>
+<body>
+<h1>Tiny Site Generator</h1>
+<p>Lots of large static site generators are in fashion
+now. Here's a tiny one you can make yourself using shell
+scripting.</p>
+<h2>Approach</h2>
+<p>The main idea is to take in a bunch of files written in
+markdown, convert them to HTML and add headers/footers.</p>
+<p>To start, we can have a <code>src</code> directory to store all
+our markdown files. To convert them to HTML, we can use
+<a href="https://github.com/karlb/smu"><code>smu</code></a>. Finally, we can
+store our generated files in a <code>dest</code> directory.</p>
+<pre><code class="language-sh">mkdir dest/articles
+for file in src/articles/*
+do
+  if test -f &quot;$file&quot;
+  then
+    basefile=&quot;$(basename &quot;$file&quot; .${file##*.})&quot;
+    echo &quot;Building $file&quot;
+    smu &quot;$file&quot; &gt;&gt; &quot;dest/articles/$basefile.html&quot;
+  fi
+done
+</code></pre>
+<p>Next, we can store header and footer html files in a
+<code>recs</code> directory and then concatenate them to every
+generated file.</p>
+<pre><code class="language-sh"># ...
+cat recs/header.html &gt; &quot;dest/articles/$basefile.html&quot;
+smu &quot;$file&quot; &gt;&gt; &quot;dest/articles/$basefile.html&quot;
+cat recs/footer.html &gt;&gt; &quot;dest/$1/$basefile.html&quot;
+# ...
+</code></pre>
+<p>And of course every time the site is made, we need to
+clear the <code>dest</code> directory.</p>
+<pre><code class="language-sh">rm -r dest
+mkdir dest
+</code></pre>
+<p>From here adding support for something like CSS is easy.</p>
+<h2>Why?</h2>
+<p>Sure this might be simple, but why bother rolling your own
+static site generator when you could just use one of the
+myriad of static site generators available on the internet?
+After all, many of them have lots of themes available for
+immediate use, and often they even have support for fancy
+tagging systems or the like. Does this approach offer any
+of that?</p>
+<p>Yes it does, and it offers more!</p>
+<p>What this approach is all about is gluing distinct
+tools together, using the common interface of text,
+to ultimately generate a few HTML files laid out in a
+directory structure. These tools are not limited to the
+tools we used. We could also use, say, <code>sed</code> to find
+and replace text, <code>git</code> to manage history, or even
+custom-built tools to do more complicated things. The
+sky(your computer, or perhaps your mind) is the limit!</p>
+<h2>Conclusion</h2>
+<p>Maybe one day I will revise this article to include
+examples of such extensions, however, right now I am
+becoming tired, so I will end it at this.</p>
+<p>Although I realize that I didn't address the issue of there
+being more themes available on other static site generators
+than there are on this approach. Again, there are a few
+things I could say about this, but right now I will just
+say CSS, yes more hacky, and aesthetic of static sites
+or something.</p>
+<p>Finally, for a full demonstration,
+<a href="https://github.com/Aaron-Speedy/personal-website">here</a>
+is the code for the website this article is posted on,
+which uses this approach.</p>
+<p>Anyway, I hope this article was helpful!</p>
+</body>
+</html>
