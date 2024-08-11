@@ -2,9 +2,9 @@
 
 gen() {
   echo "Building $1"
-  line=$(head -n 1 src/$1.md)
+  line=$(head -n 1 docs/$1.md)
   sed -e "s~PAGE_TITLE~$line~" -e "s~#~~" recs/header.html > dest/$1.html
-  smu src/$1.md >> dest/$1.html
+  smu docs/$1.md >> dest/$1.html
   cat recs/footer.html >> dest/$1.html
 }
 
