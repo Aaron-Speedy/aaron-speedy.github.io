@@ -12,5 +12,5 @@ rm -r docs
 mkdir docs
 cp recs/style.css docs
 
-mkdir docs/articles
-gen "articles/tiny-site-generator"
+# mkdir docs/articles
+# gen "articles/tiny-site-generator"
