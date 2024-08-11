@@ -3,14 +3,14 @@
 gen() {
   echo "Building $1"
   line=$(head -n 1 docs/$1.md)
-  sed -e "s~PAGE_TITLE~$line~" -e "s~#~~" recs/header.html > dest/$1.html
-  smu docs/$1.md >> dest/$1.html
-  cat recs/footer.html >> dest/$1.html
+  sed -e "s~PAGE_TITLE~$line~" -e "s~#~~" recs/header.html > docs/$1.html
+  smu docs/$1.md >> docs/$1.html
+  cat recs/footer.html >> docs/$1.html
 }
 
-rm -r dest
-mkdir dest
-cp recs/style.css dest
+rm -r docs
+mkdir docs
+cp recs/style.css docs
 
-mkdir dest/articles
+mkdir docs/articles
 gen "articles/tiny-site-generator"
