@@ -4,86 +4,65 @@ Lots of large static site generators are in fashion
 now. Here's a tiny one you can make yourself using shell
 scripting.
 
-## Approach
-The main idea is to take in a bunch of files written in
-markdown, convert them to HTML and add headers/footers.
+## Basics
+The main idea is to take in a bunch of files
+written in markdown, convert them to HTML, and attach
+headers and footers.
 
-To start, we can have a `src` directory to store all
-our markdown files. To convert them to HTML, we can use
-[`smu`](https://github.com/karlb/smu). Finally, we can
-store our generated files in a `dest` directory.
+We can start with just a single article: cool-article.md.
 
 ```sh
-mkdir dest/articles
-for file in src/articles/*
-do
-  if test -f "$file"
-  then
-    basefile="$(basename "$file" .${file##*.})"
-    echo "Building $file"
-    smu "$file" >> "dest/articles/$basefile.html"
-  fi
-done
+file="cool-article"
 ```
 
-Next, we can store header and footer html files in a
-`recs` directory and then concatenate them to every
-generated file.
+To start, we can use [smu](https://github.com/karlb/smu)
+to convert our markdown to HTML:
+```sh
+smu $file.md > $file.html
+```
+
+This does not generate any headers or footers. We can
+do that ourselves by creating two files: header.html
+and footer.html. You might also want a style.css.
+
+header.html:
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Extremely Cool Article</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+```
+
+footer.html:
+```html
+</body>
+</html>
+```
+
+To attach them to the article, we can simply do:
+```sh
+cat header.html > $file.html
+smu $file.md >> $file.html
+cat footer.html >> $file.html
+```
+
+And we're done! Now we can simply wrap it in a function
+and put it in a build.sh file.
 
 ```sh
-# ...
-cat recs/header.html > "dest/articles/$basefile.html"
-smu "$file" >> "dest/articles/$basefile.html"
-cat recs/footer.html >> "dest/$1/$basefile.html"
-# ...
+gen() {
+  cat header.html > $1.html
+  smu $1.md >> $1.html
+  cat footer.html >> $1.html
+}
+gen("cool-article")
 ```
 
-And of course every time the site is made, we need to
-clear the `dest` directory.
+## Other stuff
 
-```sh
-rm -r dest
-mkdir dest
-```
-
-From here adding support for something like CSS is easy.
-
-## Why?
-Sure this might be simple, but why bother rolling your own
-static site generator when you could just use one of the
-myriad of static site generators available on the internet?
-After all, many of them have lots of themes available for
-immediate use, and often they even have support for fancy
-tagging systems or the like. Does this approach offer any
-of that?
-
-Yes it does, and it offers more!
-
-What this approach is all about is gluing distinct
-tools together, using the common interface of text,
-to ultimately generate a few HTML files laid out in a
-directory structure. These tools are not limited to the
-tools we used. We could also use, say, `sed` to find
-and replace text, `git` to manage history, or even
-custom-built tools to do more complicated things. The
-sky(your computer, or perhaps your mind) is the limit!
-
-## Conclusion
-
-Maybe one day I will revise this article to include
-examples of such extensions, however, right now I am
-becoming tired, so I will end it at this.
-
-Although I realize that I didn't address the issue of there
-being more themes available on other static site generators
-than there are on this approach. Again, there are a few
-things I could say about this, but right now I will just
-say CSS, yes more hacky, and aesthetic of static sites
-or something.
-
-Finally, for a full demonstration,
-[here](https://github.com/Aaron-Speedy/personal-website)
-is the code for the website this article is posted on,
-which uses this approach.
-
-Anyway, I hope this article was helpful!
+One problem with what we have right now is that articl

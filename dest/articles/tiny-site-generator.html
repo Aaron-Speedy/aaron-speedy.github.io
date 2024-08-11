@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Aaron's Webpage</title>
+  <title> Tiny Site Generator</title>
   <link rel="stylesheet" href="../style.css">
 </head>
 <body>
@@ -11,70 +11,50 @@
 <p>Lots of large static site generators are in fashion
 now. Here's a tiny one you can make yourself using shell
 scripting.</p>
-<h2>Approach</h2>
-<p>The main idea is to take in a bunch of files written in
-markdown, convert them to HTML and add headers/footers.</p>
-<p>To start, we can have a <code>src</code> directory to store all
-our markdown files. To convert them to HTML, we can use
-<a href="https://github.com/karlb/smu"><code>smu</code></a>. Finally, we can
-store our generated files in a <code>dest</code> directory.</p>
-<pre><code class="language-sh">mkdir dest/articles
-for file in src/articles/*
-do
-  if test -f &quot;$file&quot;
-  then
-    basefile=&quot;$(basename &quot;$file&quot; .${file##*.})&quot;
-    echo &quot;Building $file&quot;
-    smu &quot;$file&quot; &gt;&gt; &quot;dest/articles/$basefile.html&quot;
-  fi
-done
+<h2>Basics</h2>
+<p>The main idea is to take in a bunch of files
+written in markdown, convert them to HTML, and attach
+headers and footers.</p>
+<p>We can start with just a single article: cool-article.md.</p>
+<pre><code class="language-sh">file=&quot;cool-article&quot;
 </code></pre>
-<p>Next, we can store header and footer html files in a
-<code>recs</code> directory and then concatenate them to every
-generated file.</p>
-<pre><code class="language-sh"># ...
-cat recs/header.html &gt; &quot;dest/articles/$basefile.html&quot;
-smu &quot;$file&quot; &gt;&gt; &quot;dest/articles/$basefile.html&quot;
-cat recs/footer.html &gt;&gt; &quot;dest/$1/$basefile.html&quot;
-# ...
+<p>To start, we can use <a href="https://github.com/karlb/smu">smu</a>
+to convert our markdown to HTML:</p>
+<pre><code class="language-sh">smu $file.md &gt; $file.html
 </code></pre>
-<p>And of course every time the site is made, we need to
-clear the <code>dest</code> directory.</p>
-<pre><code class="language-sh">rm -r dest
-mkdir dest
+<p>This does not generate any headers or footers. We can
+do that ourselves by creating two files: header.html
+and footer.html. You might also want a style.css.</p>
+<p>header.html:</p>
+<pre><code class="language-html">&lt;!DOCTYPE html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+&lt;head&gt;
+  &lt;meta charset=&quot;UTF-8&quot;&gt;
+  &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+  &lt;title&gt;Extremely Cool Article&lt;/title&gt;
+  &lt;link rel=&quot;stylesheet&quot; href=&quot;style.css&quot;&gt;
+&lt;/head&gt;
+&lt;body&gt;
 </code></pre>
-<p>From here adding support for something like CSS is easy.</p>
-<h2>Why?</h2>
-<p>Sure this might be simple, but why bother rolling your own
-static site generator when you could just use one of the
-myriad of static site generators available on the internet?
-After all, many of them have lots of themes available for
-immediate use, and often they even have support for fancy
-tagging systems or the like. Does this approach offer any
-of that?</p>
-<p>Yes it does, and it offers more!</p>
-<p>What this approach is all about is gluing distinct
-tools together, using the common interface of text,
-to ultimately generate a few HTML files laid out in a
-directory structure. These tools are not limited to the
-tools we used. We could also use, say, <code>sed</code> to find
-and replace text, <code>git</code> to manage history, or even
-custom-built tools to do more complicated things. The
-sky(your computer, or perhaps your mind) is the limit!</p>
-<h2>Conclusion</h2>
-<p>Maybe one day I will revise this article to include
-examples of such extensions, however, right now I am
-becoming tired, so I will end it at this.</p>
-<p>Although I realize that I didn't address the issue of there
-being more themes available on other static site generators
-than there are on this approach. Again, there are a few
-things I could say about this, but right now I will just
-say CSS, yes more hacky, and aesthetic of static sites
-or something.</p>
-<p>Finally, for a full demonstration,
-<a href="https://github.com/Aaron-Speedy/personal-website">here</a>
-is the code for the website this article is posted on,
-which uses this approach.</p>
-<p>Anyway, I hope this article was helpful!</p>
+<p>footer.html:</p>
+<pre><code class="language-html">&lt;/body&gt;
+&lt;/html&gt;
+</code></pre>
+<p>To attach them to the article, we can simply do:</p>
+<pre><code class="language-sh">cat header.html &gt; $file.html
+smu $file.md &gt;&gt; $file.html
+cat footer.html &gt;&gt; $file.html
+</code></pre>
+<p>And we're done! Now we can simply wrap it in a function
+and put it in a build.sh file.</p>
+<pre><code class="language-sh">gen() {
+  cat header.html &gt; $1.html
+  smu $1.md &gt;&gt; $1.html
+  cat footer.html &gt;&gt; $1.html
+}
+gen(&quot;cool-article&quot;)
+</code></pre>
+<h2>Other stuff</h2>
+<p>One problem with what we have right now is that articl</p>
 </body>
 </html>

@@ -2,8 +2,6 @@
 
 I'm Aaron Speedy and this is my webpage. Thanks for stopping by!
 
-## Stuff
+You can find my some of my code [here](https://github.com/Aaron-Speedy).
 
-Here are the links to my two public endeavors:
-- [Software](https://github.com/Aaron-Speedy/)
-- [Articles](/articles/)
+Contact me at [aaron@infotoast.org](mailto:aaron@infotoast.org).
