@@ -1,9 +1,3 @@
-#include <stdio.h>
-#include <stdlib.h>
-
-#define PPM_IMPL
-#include "ppm.h"
-
 void fastcircle(unsigned char *img, int w, int h, int r) {
   int x = r, y = 0;
   int d = 0, dy = 0, dx = 2 * r;
@@ -29,11 +23,4 @@ void fastcircle(unsigned char *img, int w, int h, int r) {
     }
     y += 1;
   }
-}
-
-int main() {
-  int w = 500, h = 500;
-  unsigned char *img = malloc(w * h * sizeof(unsigned char));
-  fastcircle(img, w, h, 100);
-  write_p2("fastcircle.ppm", img, w, h);
 }
