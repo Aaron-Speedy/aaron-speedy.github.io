@@ -15,7 +15,8 @@ rm -r docs
 mkdir docs
 cp recs/style.css docs
 
-# mkdir docs/articles
-# gen "articles/tiny-site-generator" header
+mkdir docs/articles
+gen "articles/tiny-site-generator" header
 
 gen "index" index-header
+gen "webhosting" index-header
